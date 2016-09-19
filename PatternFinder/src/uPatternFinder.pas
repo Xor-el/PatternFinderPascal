@@ -23,14 +23,14 @@ uses
 {$ELSE}
   Generics.Collections
 {$ENDIF FPC}
-{$IF DEFINED (SUPPORT_PARALLEL_PROGRAMMING)},
-  Threading{$IFEND};
+{$IFDEF SUPPORT_PARALLEL_PROGRAMMING},
+  Threading{$ENDIF};
 
 // ================================================================== //
 
 type
 
-  TPattern = class(TObject)
+  TPattern = class sealed(TObject)
 
   public
 
@@ -105,7 +105,7 @@ type
 
 type
 
-  TSignature = class(TInterfacedObject, ISignature)
+  TSignature = class sealed(TInterfacedObject, ISignature)
 
   strict private
 
@@ -130,18 +130,18 @@ type
   // ================================================================== //
 
 type
-  TSignatureFinder = class(TObject)
+  TSignatureFinder = class sealed(TObject)
 
   public
     class function Scan(Data: TBytes; signatures: TISignatureArray)
       : TISignatureArray; static;
   end;
 
-{$IF DEFINED (SUPPORT_PARALLEL_PROGRAMMING)}
+{$IFDEF SUPPORT_PARALLEL_PROGRAMMING}
 
 var
   tsList: TThreadList<ISignature>;
-{$IFEND}
+{$ENDIF}
 
 implementation
 
@@ -404,15 +404,15 @@ var
 
 begin
 
-{$IF DEFINED (SUPPORT_PARALLEL_PROGRAMMING)}
+{$IFDEF SUPPORT_PARALLEL_PROGRAMMING}
   tsList := TThreadList<ISignature>.Create;
   found := tsList.LockList;
 {$ELSE}
   found := {$IFDEF FPC} TFPGList<ISignature> {$ELSE} TList<ISignature>
 {$ENDIF}.Create;
-{$IFEND}
+{$ENDIF}
   try
-{$IF DEFINED (SUPPORT_PARALLEL_PROGRAMMING)}
+{$IFDEF SUPPORT_PARALLEL_PROGRAMMING}
     TParallel.&For(0, Length(signatures) - 1,
       procedure(Idx: Int64)
 
@@ -441,7 +441,7 @@ begin
       Inc(Idx);
     end;
 
-{$IFEND}
+{$ENDIF}
     j := 0;
     SetLength(result, found.Count);
     for sig in found do
@@ -451,12 +451,12 @@ begin
     end;
 
   finally
-{$IF DEFINED (SUPPORT_PARALLEL_PROGRAMMING)}
+{$IFDEF SUPPORT_PARALLEL_PROGRAMMING}
     tsList.UnlockList;
     tsList.Free;
 {$ELSE}
     found.Free;
-{$IFEND}
+{$ENDIF}
   end;
 
 end;
