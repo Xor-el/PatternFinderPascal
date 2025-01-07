@@ -1,0 +1,7 @@
+{
+    "app" : "PatternFinder",
+    "lib" : "PatternFinder",
+    "tst" : "PatternFinder.Console.Tests/FreePascal.Tests/PatternFinder.Console.lpi",
+    "pkg" : [
+    ]
+}
