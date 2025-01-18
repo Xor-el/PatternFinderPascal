@@ -4,6 +4,7 @@ program PatternFinder.Console;
 
 uses
   SysUtils,
+  consoletestrunner,
   PatternFinderConsoleTests in '..\src\PatternFinderConsoleTests.pas',
   uPatternFinder in '..\..\PatternFinder\src\uPatternFinder.pas';
 
